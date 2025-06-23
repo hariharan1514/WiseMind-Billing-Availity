@@ -107,12 +107,14 @@ if configSheetPath:
             filterDate = filterDate.strftime('%m/%d/%Y')
             removePreviousDate_df = removeBlanks_df[removeBlanks_df['Date/Time'].str.match(filterDate)]
 
+        # Remove SelfPay Payors
+        remove_selfpay_payors = removePreviousDate_df[~removePreviousDate_df['Payor Name'] == "SelfPay"]
 
-        # Drop Availity Payors
-        dropAvailityPayor_df = removePreviousDate_df[~removePreviousDate_df['Payor Name'].isin(availityPayor)]
+        # # Drop Availity Payors
+        # dropAvailityPayor_df = removePreviousDate_df[~removePreviousDate_df['Payor Name'].isin(availityPayor)]
 
         automationFileSavePath = attendanceDatafilepath.replace(f'Detailed Attendance - {pathTemp_Date}.xlsx',f"Straightforward Billing Case - {pathTemp_Date}.xlsx")
-        dropAvailityPayor_df.to_excel(automationFileSavePath,index=False)
+        remove_selfpay_payors.to_excel(automationFileSavePath,index=False)
         print("Scrubbing Process Completed !")
 
     else:
