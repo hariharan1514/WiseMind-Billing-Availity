@@ -673,3 +673,11 @@ else:
 
         print("✅✅ Billing Completed! ✅✅")
         driver.quit()
+
+
+'''
+Ledger : https://wisemind71.theranest.com/ledger/client-67a0e36d7c4fc99cb840d063/open-invoices
+ClientDetails : https://wisemind71.theranest.com/clients/details/67a0e36d7c4fc99cb840d063
+BillToInsurance : https://wisemind71.theranest.com/clients/billing-info/67a0e36d7c4fc99cb840d063
+
+'''
