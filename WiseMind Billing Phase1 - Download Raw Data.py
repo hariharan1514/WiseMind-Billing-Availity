@@ -101,7 +101,6 @@ if not os.path.exists(attendanceDatafilepath) or not os.path.exists(allClientsDa
             except:
                 pass
 
-
             Sec_count = 0
             Previous_files = set(glob.glob(f"{downloadFolderPath}/*.csv"))
             while Sec_count < 300:
@@ -190,4 +189,3 @@ if not os.path.exists(attendanceDatafilepath) or not os.path.exists(allClientsDa
 
 else:
     print("The downloading process for the Billing and All Claims data files has already been completed.")
-    # //div[@class='noty_message']

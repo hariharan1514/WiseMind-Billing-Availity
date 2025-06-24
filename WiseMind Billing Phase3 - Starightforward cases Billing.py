@@ -54,6 +54,10 @@ else:
         payorwise_providerDf_dict = payorwise_provider_df.set_index('Payer')[['Rendering Provider','Billing Provider']].to_dict(orient='index')
         print(payorwise_providerDf_dict)
 
+        #Availity Payor
+        availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=1)
+        availitypayor = availitypayor_df['Availity Payors'].dropna().tolist()
+
         staffmemberwise_providerDf_dict = staffmemberwise_provider_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
         print(staffmemberwise_providerDf_dict)
 
@@ -138,6 +142,12 @@ else:
             archived_tab =False
             availity_payor = False
 
+            ### Check for Availity Payor
+            if payor_name in availity_payor:
+                availity_payor = True
+            else:
+                availity_payor = False
+
             for tab in tabs:
                 for name in name_to_search:
 
@@ -190,6 +200,8 @@ else:
                                     firstname = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//input[@name='FirstName']"))).get_attribute("value")
                                     middlename = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//input[@name='MiddleName']"))).get_attribute("value")
                                     lastname = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//input[@name='LastName']"))).get_attribute("value")
+
+
 
                                     portal_client_name = f"{firstname} {middlename} {lastname}".strip()
                                     portal_client_name = " ".join(portal_client_name.split())
