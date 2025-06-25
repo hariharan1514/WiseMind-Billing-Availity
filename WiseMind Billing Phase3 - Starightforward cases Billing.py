@@ -34,6 +34,7 @@ else:
         from selenium.webdriver.support import expected_conditions as EC
         from selenium.common.exceptions import StaleElementReferenceException
         from selenium.webdriver.common.keys import Keys
+        import re
 
         # Read Configuration Sheet with openpyxl & Pandas module
         config_sheet_path = r"Z:\Wisemind\Charge Entry -Billing\Automation Config File\ConfigSheet.xlsx"
@@ -50,16 +51,15 @@ else:
         # Set Payor wise Billing and Rendering provider & Set Staff Member wise Billing and Rendering provider
         payorwise_provider_df = pd.read_excel(config_sheet_path, sheet_name= 2)
         staffmemberwise_provider_df = pd.read_excel(config_sheet_path, sheet_name= 3)
+        availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=4)
         # Convert Provider Table to Provider Dictionary
         payorwise_providerDf_dict = payorwise_provider_df.set_index('Payer')[['Rendering Provider','Billing Provider']].to_dict(orient='index')
-        print(payorwise_providerDf_dict)
+        staffmemberwise_providerDf_dict = staffmemberwise_provider_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
+        availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
 
         #Availity Payor
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=1)
         availitypayor = availitypayor_df['Availity Payors'].dropna().tolist()
-
-        staffmemberwise_providerDf_dict = staffmemberwise_provider_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
-        print(staffmemberwise_providerDf_dict)
 
         # Initiate the Chrome instance
         chrome_option = webdriver.ChromeOptions()
@@ -141,6 +141,7 @@ else:
             active_tab = False
             archived_tab =False
             availity_payor = False
+            insurance_id_check = False
 
             ### Check for Availity Payor
             if payor_name in availity_payor:
@@ -363,6 +364,7 @@ else:
 
                 daigonis_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,"//form//div[@class='content']//p")))
                 daignosis_text = daigonis_element.text.strip()
+                print(daignosis_text)
                 # time.sleep(2)
                 close_dxTab_element = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='ModalCloseButton']")))
                 close_dxTab_element.click()
@@ -396,20 +398,49 @@ else:
                         time.sleep(1)
 
 
-                    if payor_name in staff_member_payors:
-                        if staff_member in staffmemberwise_providerDf_dict:
-                            rendering_provider = staffmemberwise_providerDf_dict[staff_member]['Rendering Provider']
-                            billing_provider = staffmemberwise_providerDf_dict[staff_member]['Billing Provider']
-                        else:
-                            print(f"The Payor name ({payor_name}) is missing in the Staff Member table masters. Kindly check and re run the script")
-                            sys.exit()
+                    if availitypayor:
+                        ### capture the DX Code for availity Portal Purpose
+                        dxcodes = re.findall(r"\(([^)]+)\)", daignosis_text)
+                        merged_dxcodes = ",".join(dxcodes)
+
+                        ### Claim_DOS details Scrubbing ###
+                        placeofservice_element = WebDriverWait(driver, 60).until(
+                            EC.visibility_of_element_located((By.XPATH, "(//select[@data-aqa='servicePlaceOfService'])[1]")))
+                        place_of_service = placeofservice_element.get_attribute("value")
+                        # place_of_service = re.findall(r"\(([^)+])\)", place_of_service)
+
+                        patient_amount_element = WebDriverWait(driver, 60).until(
+                            EC.visibility_of_element_located((By.XPATH, "(//input[@data-aqa='serviceAmount'])[1]")))
+                        insurance_amount = patient_amount_element.get_attribute("value")
+
+                        patient_unit_element = WebDriverWait(driver, 60).until(
+                            EC.visibility_of_element_located((By.XPATH, "(//input[@data-aqa='serviceUnits'])[1]")))
+                        unit = patient_unit_element.get_attribute("value")
+
+
+
+                        if payor_name in availitypayor_staffmember_dict:
+                            if staff_member in availitypayor_staffmember_dict:
+                                rendering_provider = availitypayor_staffmember_dict[staff_member]['Rendering Provider']
+                                billing_provider = availitypayor_staffmember_dict[staff_member]['Billing Provider']
+                            else:
+                                print(f"The Staff name ({staff_member}) is missing in the Staff Member table masters. Kindly check and re run the script")
+                                sys.exit()
                     else:
-                        if payor_name in payorwise_providerDf_dict:
-                            rendering_provider = payorwise_providerDf_dict[payor_name]['Rendering Provider']
-                            billing_provider = payorwise_providerDf_dict[payor_name]['Billing Provider']
+                        if payor_name in staff_member_payors:
+                            if staff_member in staffmemberwise_providerDf_dict:
+                                rendering_provider = staffmemberwise_providerDf_dict[staff_member]['Rendering Provider']
+                                billing_provider = staffmemberwise_providerDf_dict[staff_member]['Billing Provider']
+                            else:
+                                print(f"The Payor name ({staff_member}) is missing in the Staff Member table masters. Kindly check and re run the script")
+                                sys.exit()
                         else:
-                            print(f"The Payor name ({payor_name}) is missing in the Payor table masters. Kindly check and re run the script")
-                            sys.exit()
+                            if payor_name in payorwise_providerDf_dict:
+                                rendering_provider = payorwise_providerDf_dict[payor_name]['Rendering Provider']
+                                billing_provider = payorwise_providerDf_dict[payor_name]['Billing Provider']
+                            else:
+                                print(f"The Payor name ({payor_name}) is missing in the Payor table masters. Kindly check and re run the script")
+                                sys.exit()
 
                     # Set Rendering & Billing Provider
                     renderingProvider_dropdown = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//div[@data-aqa='invoiceRenderingProvider']")))
@@ -448,7 +479,7 @@ else:
                             actions.move_to_element(billing_provider_option).click().perform()
 
                     # Move to awaiting
-                    if status not in ["Late Cancel", "No Show"]:
+                    if status not in ["Late Cancel", "No Show"] and not availity_payor:
                         save_dropdown_btn_element = WebDriverWait(driver, 120).until(EC.visibility_of_element_located((By.XPATH,"(//div[@data-aqa='btnSaveOptions'])[1]")))
                         time.sleep(1)
                         actions.move_to_element(save_dropdown_btn_element).perform()
@@ -471,7 +502,7 @@ else:
                 print(f"❌ DOS: ({extracted_dos_date}) does not match. No claim entry found in the service table.")
                 scrubbing_sheet.cell(row=row, column=data_columns['Exceptions']).value = "No claims are present in particular DOS"
                 continue
-            if status == "Late Cancel" or status == "No Show" :
+            if status == "Late Cancel" or status == "No Show":
                 save_element = WebDriverWait(driver, 30).until(
                     EC.presence_of_element_located((By.XPATH, "(//button[@data-aqa='saveInvoice'])[1]")))
                 actions.move_to_element(save_element).click().perform()
@@ -479,6 +510,103 @@ else:
                 scrubbing_sheet.cell(row=row, column=data_columns['Is Billed']).value = "Yes"
                 sf_billing_wb.save(billing_file_path)
                 print(f"✅ Billing for patient ({client_name}) has been successfully moved to insurance.")
+
+                if availity_payor:
+                    client_url_number = claim_url.split('/')[-1]
+
+                    ### Invoice Number ###
+                    openInvoice_tbl_element = WebDriverWait(driver, 120).until(
+                        EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]")))
+
+                    invoicenumber_element = WebDriverWait(driver, 60).until(
+                        EC.presence_of_element_located((By.XPATH, "(//table//td[@data-aqa='number'])[1]")))
+                    invoice_number = invoicenumber_element.text
+
+                    ### ClientDetails Scrubbing ###
+                    driver.get(f"https://wisemind71.theranest.com/clients/details/{client_url_number}")
+
+                    patient_dob_element = WebDriverWait(driver, 60).until(
+                        EC.visibility_of_element_located((By.XPATH, "//input[@name='DemographicInfoBirthDate']")))
+                    dob = patient_dob_element.get_attribute("value")
+
+                    patient_gender_element = WebDriverWait(driver, 60).until(
+                        EC.visibility_of_element_located((By.XPATH, "//select[@name='DemographicInfoGender']")))
+                    gender = patient_gender_element.get_attribute("value")
+
+                    patient_street_element = WebDriverWait(driver, 60).until(
+                        EC.visibility_of_element_located((By.XPATH, "//input[@name='AddressStreet']")))
+                    street = patient_street_element.get_attribute("value")
+
+                    patient_city_element = WebDriverWait(driver, 60).until(
+                        EC.visibility_of_element_located((By.XPATH, "//input[@name='AddressCity']")))
+                    city = patient_city_element.get_attribute("value")
+
+                    patient_state_element = WebDriverWait(driver, 60).until(
+                        EC.visibility_of_element_located((By.XPATH, "//select[@name='AddressState']")))
+                    state = patient_state_element.get_attribute("value")
+
+                    patient_zipcode_element = WebDriverWait(driver, 60).until(
+                        EC.visibility_of_element_located((By.XPATH, "//input[@name='AddressZip']")))
+                    zip_code = patient_zipcode_element.get_attribute("value")
+
+                    ### Insurance details Scrubbing ###
+                    driver.get(f"https://wisemind71.theranest.com/clients/billing-info/{client_url_number}")
+
+                    insurance_table_element = WebDriverWait(driver, 60).until(
+                        EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]//tr")))
+
+                    if len(insurance_table_element):
+                        for tbl_row in range(1, len(insurance_table_element)+1):
+
+                            payorname_row_element = WebDriverWait(driver, 60).until(
+                                EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='provider']")))
+                            payorname = payorname_row_element.get_attribute("value")
+
+                            payor_status_element = WebDriverWait(driver, 60).until(
+                                EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='status']//div[@class='azk_cy azk_a1 azk_kl']")))
+                            payor_status = payor_status_element.get_attribute("value")
+
+                            if payorname in availitypayor and payor_status == "Active":
+                                insurance_id_check = True
+                                insurance_id_element = WebDriverWait(driver, 60).until(
+                                    EC.visibility_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='insuredIdNumber']")))
+                                insurance_id = insurance_id_element.get_attribute("value")
+                                break
+                            else:
+                                continue
+
+                    if availity_payor and not insurance_id_check:
+                        driver.get(f"https://wisemind71.theranest.com/ledger/client-{client_url_number}/open-invoices")
+                        time.sleep(10)
+
+                        openInvoice_tbl_element = WebDriverWait(driver, 120).until(
+                            EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]")))
+
+                        action_btn_element = WebDriverWait(driver, 60).until(
+                            EC.element_to_be_clickable(
+                                (By.XPATH, "//table//tbody//tr[1]//td[7]//div[@data-aqa='btnActions']")))
+                        action_btn_element.click()
+
+                        delete_invoiceBtn_element = WebDriverWait(driver, 60).until(
+                            EC.element_to_be_clickable(
+                                (By.XPATH, "//table//tbody//tr[1]//td[7]//div[@data-aqa='Delete']")))
+                        delete_invoiceBtn_element.click()
+
+                        delete_invoiceBtn2_element = WebDriverWait(driver, 60).until(
+                            EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='btnDeleteInvoice']")))
+                        delete_invoiceBtn2_element.click()
+                        delete_invoiceBtn2_element = WebDriverWait(driver, 60).until(
+                            EC.invisibility_of_element_located((By.XPATH, "//button[@data-aqa='btnDeleteInvoice']")))
+                        time.sleep(1)
+
+                        scrubbing_sheet.cell(row=row, column=data_columns[
+                            'Exceptions']).value = "The claim encountered an error during the 'Awaiting Submission' process."
+                        sf_billing_wb.save(billing_file_path)
+                        print(f"❌ Patient ({client_name}) has no active BCBS insurance or missing Insurance ID, so the claim was moved to exceptions.")
+                        print("\n")
+                    else:
+
+
 
             if move_awaiting:
                 try:
@@ -578,17 +706,22 @@ else:
                             driver.get(f"https://wisemind71.theranest.com/ledger/client-{client_url_number}/open-invoices")
                             time.sleep(10)
 
-                            openInvoice_tbl_element = WebDriverWait(driver, 120).until(EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]")))
+                            openInvoice_tbl_element = WebDriverWait(driver, 120).until(
+                                EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]")))
 
-                            action_btn_element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, "//table//tbody//tr[1]//td[7]//div[@data-aqa='btnActions']")))
+                            action_btn_element = WebDriverWait(driver, 60).until(
+                                EC.element_to_be_clickable((By.XPATH, "//table//tbody//tr[1]//td[7]//div[@data-aqa='btnActions']")))
                             action_btn_element.click()
 
-                            delete_invoiceBtn_element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, "//table//tbody//tr[1]//td[7]//div[@data-aqa='Delete']")))
+                            delete_invoiceBtn_element = WebDriverWait(driver, 60).until(
+                                EC.element_to_be_clickable((By.XPATH, "//table//tbody//tr[1]//td[7]//div[@data-aqa='Delete']")))
                             delete_invoiceBtn_element.click()
 
-                            delete_invoiceBtn2_element = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='btnDeleteInvoice']")))
+                            delete_invoiceBtn2_element = WebDriverWait(driver, 60).until(
+                                EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='btnDeleteInvoice']")))
                             delete_invoiceBtn2_element.click()
-                            delete_invoiceBtn2_element = WebDriverWait(driver, 60).until(EC.invisibility_of_element_located((By.XPATH, "//button[@data-aqa='btnDeleteInvoice']")))
+                            delete_invoiceBtn2_element = WebDriverWait(driver, 60).until(
+                                EC.invisibility_of_element_located((By.XPATH, "//button[@data-aqa='btnDeleteInvoice']")))
                             time.sleep(1)
 
                             scrubbing_sheet.cell(row=row, column=data_columns['Exceptions']).value = "The claim encountered an error during the 'Awaiting Submission' process."
@@ -675,9 +808,3 @@ else:
         driver.quit()
 
 
-'''
-Ledger : https://wisemind71.theranest.com/ledger/client-67a0e36d7c4fc99cb840d063/open-invoices
-ClientDetails : https://wisemind71.theranest.com/clients/details/67a0e36d7c4fc99cb840d063
-BillToInsurance : https://wisemind71.theranest.com/clients/billing-info/67a0e36d7c4fc99cb840d063
-
-'''
