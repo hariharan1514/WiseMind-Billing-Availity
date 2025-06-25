@@ -11,6 +11,8 @@ parent_folder_path = r"Z:\Wisemind\Charge Entry -Billing\Billing Dates"
 path_temp_date = datetime.today().strftime('%m%d%Y')
 billing_file_path = (parent_folder_path + "\\" +path_temp_date[4:] + "\\" +datetime.today().strftime("%m %b'%Y") +
                    "\\" +path_temp_date + "\\" +f"Straightforward Billing Case - {path_temp_date}.xlsx")
+bcbs_file_path = (parent_folder_path + "\\" +path_temp_date[4:] + "\\" +datetime.today().strftime("%m %b'%Y") +
+                   "\\" +path_temp_date + "\\" +f"BCBS scrubbed file - {path_temp_date}.xlsx")
 
 ### Check whether the Straightforward Billing file is present or not.
 if not os.path.exists(billing_file_path):
@@ -575,7 +577,51 @@ else:
                             else:
                                 continue
 
-                    if availity_payor and not insurance_id_check:
+                    if availity_payor and insurance_id_check:
+                        if not os.path.exists(bcbs_file_path):
+                            bcbs_logbook = openpyxl.workbook()
+                            bcbs_logsheet = bcbs_logbook.active
+
+                            headers = ["Client Name", "Client ID Number", "Date/Time", "Service Type", "Staff Member(s)", "Payor Name", "First Name", "Last Name", "DOB", "Gender", "Street", "City", "State", "ZIP Code", "Claim Invoice Number", "Place of Service", "DX Code", "Charge Amount","Quantity"]
+                            for col_num, headers in enumerate(headers, start=1):
+                                bcbs_logsheet.cells(row=1, column=col_num, value=headers)
+
+                            bcbs_logbook.save(bcbs_file_path)
+                        else:
+                            bcbs_logbook = load_workbook(bcbs_file_path)
+                            bcbs_logsheet = bcbs_logbook.active
+
+                            bcbs_data_column = {}
+                            for col in range(1, bcbs_logsheet.max_column + 1):
+                                col_name = bcbs_logsheet.cell(row=1, column=col).value
+                                if col_name:
+                                    bcbs_data_column[col_name.strip()] = col
+
+                            max_row = bcbs_logsheet.max_row + 1
+
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Client Name"]).value = client_name
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Client ID Number"]).value = client_id_number
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Date/Time"]).value = dos_date
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Service Type"]).value = service_type
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Staff Member(s)"]).value = staff_member
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Payor Name"]).value =payor_name
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["First Name"]).value = firstname
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Last Name"]).value = lastname
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DOB"]).value = dob
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Gender"]).value = gender
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Street"]).value = street
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["City"]).value = city
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["State"]).value = state
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["ZIP Code"]).value = zip_code
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Claim Invoice Number"]).value = invoice_number
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Place of Service"]).value = place_of_service
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DX Code"]).value = dxcodes
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Charge Amount"]).value = insurance_amount
+                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Quantity"]).value = unit
+
+                            bcbs_logbook.save(bcbs_file_path)
+
+                    else:
                         driver.get(f"https://wisemind71.theranest.com/ledger/client-{client_url_number}/open-invoices")
                         time.sleep(10)
 
@@ -604,7 +650,7 @@ else:
                         sf_billing_wb.save(billing_file_path)
                         print(f"❌ Patient ({client_name}) has no active BCBS insurance or missing Insurance ID, so the claim was moved to exceptions.")
                         print("\n")
-                    else:
+
 
 
 
