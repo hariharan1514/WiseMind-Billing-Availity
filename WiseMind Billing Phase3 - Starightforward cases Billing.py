@@ -38,7 +38,7 @@ else:
         from selenium.common.exceptions import StaleElementReferenceException
         from selenium.webdriver.common.keys import Keys
         import re
-        import openpyxl
+        from openpyxl import workbook, load_workbook
 
         # Read Configuration Sheet with openpyxl & Pandas module
         config_sheet_path = r"Z:\Wisemind\Charge Entry -Billing\Automation Config File\ConfigSheet.xlsx"
@@ -586,7 +586,7 @@ else:
 
                     if availity_payor and insurance_id_check:
                         if not os.path.exists(bcbs_file_path):
-                            bcbs_logbook = openpyxl.workbook()
+                            bcbs_logbook = workbook()
                             bcbs_logsheet = bcbs_logbook.active
 
                             headers = ["Client Name", "Client ID Number", "Date/Time", "Service Type", "Staff Member(s)", "Payor Name", "First Name", "Last Name", "DOB", "Gender", "Street", "City", "State", "ZIP Code", "Claim Invoice Number", "Place of Service", "DX Code", "Charge Amount","Quantity"]
