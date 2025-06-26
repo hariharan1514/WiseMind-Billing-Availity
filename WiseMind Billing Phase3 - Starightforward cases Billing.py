@@ -58,10 +58,11 @@ else:
         payorwise_providerDf_dict = payorwise_provider_df.set_index('Payer')[['Rendering Provider','Billing Provider']].to_dict(orient='index')
         staffmemberwise_providerDf_dict = staffmemberwise_provider_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
         availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
-
+        print(availitypayor_staffmember_dict)
         #Availity Payor
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=1)
         availitypayor = availitypayor_df['Availity Payors'].dropna().tolist()
+        print(availitypayor)
 
         # Initiate the Chrome instance
         chrome_option = webdriver.ChromeOptions()
@@ -400,7 +401,7 @@ else:
                         time.sleep(1)
 
 
-                    if availitypayor:
+                    if availity_payor:
                         ### capture the DX Code for availity Portal Purpose
                         dxcodes = re.findall(r"\(([^)]+)\)", daignosis_text)
                         merged_dxcodes = ",".join(dxcodes)
