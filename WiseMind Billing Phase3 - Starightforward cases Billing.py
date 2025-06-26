@@ -593,12 +593,6 @@ else:
                             for col_num, headers in enumerate(headers, start=1):
                                 bcbs_logsheet.cell(row=1, column=col_num, value=headers)
 
-                            bcbs_data_column = {}
-                            for col in range(1, bcbs_logsheet.max_column + 1):
-                                col_name = bcbs_logsheet.cell(row=1, column=col).value
-                                if col_name:
-                                    bcbs_data_column[col_name.strip()] = col
-
                             bcbs_logbook.save(bcbs_file_path)
 
 
@@ -629,7 +623,7 @@ else:
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["ZIP Code"]).value = zip_code
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Claim Invoice Number"]).value = invoice_number
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Place of Service"]).value = place_of_service
-                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DX Code"]).value = dxcodes
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DX Code"]).value = merged_dxcodes
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Charge Amount"]).value = insurance_amount
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Quantity"]).value = unit
 
