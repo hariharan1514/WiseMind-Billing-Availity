@@ -586,7 +586,7 @@ else:
 
                     if availity_payor and insurance_id_check:
                         if not os.path.exists(bcbs_file_path):
-                            bcbs_logbook = workbook()
+                            bcbs_logbook = Workbook()
                             bcbs_logsheet = bcbs_logbook.active
 
                             headers = ["Client Name", "Client ID Number", "Date/Time", "Service Type", "Staff Member(s)", "Payor Name", "First Name", "Last Name", "DOB", "Gender", "Street", "City", "State", "ZIP Code", "Claim Invoice Number", "Place of Service", "DX Code", "Charge Amount","Quantity"]
