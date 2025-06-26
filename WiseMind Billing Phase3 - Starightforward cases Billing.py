@@ -38,6 +38,7 @@ else:
         from selenium.common.exceptions import StaleElementReferenceException
         from selenium.webdriver.common.keys import Keys
         import re
+        import openpyxl
 
         # Read Configuration Sheet with openpyxl & Pandas module
         config_sheet_path = r"Z:\Wisemind\Charge Entry -Billing\Automation Config File\ConfigSheet.xlsx"
@@ -578,7 +579,7 @@ else:
                             insurance_id_check = True
                             insurance_id_element = WebDriverWait(driver, 60).until(
                                 EC.visibility_of_element_located((By.XPATH, f"(//td[@data-aqa='insuredIdNumber'])[{tbl_row}]")))
-                            insurance_id = insurance_id_element.get_attribute("value")
+                            insurance_id = insurance_id_element.text
                             break
                         else:
                             continue
