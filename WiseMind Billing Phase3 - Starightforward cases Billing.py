@@ -566,11 +566,13 @@ else:
 
                         payorname_row_element = WebDriverWait(driver, 60).until(
                             EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='provider'])[{tbl_row}]")))
-                        payorname = payorname_row_element.get_attribute("value")
+                        payorname = payorname_row_element.text
+                        print(f"payorname : {payorname}")
 
                         payor_status_element = WebDriverWait(driver, 60).until(
-                            EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='status'])[{tbl_row}]//div[@class='azk_cy azk_a1 azk_kl']")))
-                        payor_status = payor_status_element.get_attribute("value")
+                            EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='status'])[{tbl_row}]//div//div")))
+                        payor_status = payor_status_element.text
+                        print(f"payor_status : {payor_status}")
 
                         if payorname in availitypayor and payor_status == "Active":
                             insurance_id_check = True
