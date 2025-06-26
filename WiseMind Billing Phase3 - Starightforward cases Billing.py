@@ -565,11 +565,11 @@ else:
                     for tbl_row in range(1, len(insurance_table_element)+1):
 
                         payorname_row_element = WebDriverWait(driver, 60).until(
-                            EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='provider']")))
+                            EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='provider'])[{tbl_row}]")))
                         payorname = payorname_row_element.get_attribute("value")
 
                         payor_status_element = WebDriverWait(driver, 60).until(
-                            EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='status']//div[@class='azk_cy azk_a1 azk_kl']")))
+                            EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='status'])[{tbl_row}]//div[@class='azk_cy azk_a1 azk_kl']")))
                         payor_status = payor_status_element.get_attribute("value")
 
                         if payorname in availitypayor and payor_status == "Active":
