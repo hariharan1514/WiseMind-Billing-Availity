@@ -593,40 +593,47 @@ else:
                             for col_num, headers in enumerate(headers, start=1):
                                 bcbs_logsheet.cell(row=1, column=col_num, value=headers)
 
-                            bcbs_logbook.save(bcbs_file_path)
-                        else:
-                            bcbs_logbook = load_workbook(bcbs_file_path)
-                            bcbs_logsheet = bcbs_logbook.active
-
                             bcbs_data_column = {}
                             for col in range(1, bcbs_logsheet.max_column + 1):
                                 col_name = bcbs_logsheet.cell(row=1, column=col).value
                                 if col_name:
                                     bcbs_data_column[col_name.strip()] = col
 
-                            max_row = bcbs_logsheet.max_row + 1
-
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Client Name"]).value = client_name
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Client ID Number"]).value = client_id_number
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Date/Time"]).value = dos_date
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Service Type"]).value = service_type
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Staff Member(s)"]).value = staff_member
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Payor Name"]).value =payor_name
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["First Name"]).value = firstname
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Last Name"]).value = lastname
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DOB"]).value = dob
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Gender"]).value = gender
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Street"]).value = street
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["City"]).value = city
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["State"]).value = state
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["ZIP Code"]).value = zip_code
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Claim Invoice Number"]).value = invoice_number
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Place of Service"]).value = place_of_service
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DX Code"]).value = dxcodes
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Charge Amount"]).value = insurance_amount
-                            bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Quantity"]).value = unit
-
                             bcbs_logbook.save(bcbs_file_path)
+
+
+                        bcbs_logbook = load_workbook(bcbs_file_path)
+                        bcbs_logsheet = bcbs_logbook.active
+
+                        bcbs_data_column = {}
+                        for col in range(1, bcbs_logsheet.max_column + 1):
+                            col_name = bcbs_logsheet.cell(row=1, column=col).value
+                            if col_name:
+                                bcbs_data_column[col_name.strip()] = col
+
+                        max_row = bcbs_logsheet.max_row + 1
+
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Client Name"]).value = client_name
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Client ID Number"]).value = client_id_number
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Date/Time"]).value = dos_date
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Service Type"]).value = service_type
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Staff Member(s)"]).value = staff_member
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Payor Name"]).value =payor_name
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["First Name"]).value = firstname
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Last Name"]).value = lastname
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DOB"]).value = dob
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Gender"]).value = gender
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Street"]).value = street
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["City"]).value = city
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["State"]).value = state
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["ZIP Code"]).value = zip_code
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Claim Invoice Number"]).value = invoice_number
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Place of Service"]).value = place_of_service
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DX Code"]).value = dxcodes
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Charge Amount"]).value = insurance_amount
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Quantity"]).value = unit
+
+                        bcbs_logbook.save(bcbs_file_path)
 
                     else:
                         driver.get(f"https://wisemind71.theranest.com/ledger/client-{client_url_number}/open-invoices")
