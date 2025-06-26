@@ -516,7 +516,10 @@ else:
                 time.sleep(1)
                 scrubbing_sheet.cell(row=row, column=data_columns['Is Billed']).value = "Yes"
                 sf_billing_wb.save(billing_file_path)
-                print(f"✅ Billing for patient ({client_name}) has been successfully moved to insurance.")
+                if availity_payor:
+                    print(f"✅ Billing invoice for patient ({client_name}) has been successfully created.")
+                else:
+                    print(f"✅ Billing for patient ({client_name}) has been successfully moved to insurance.")
 
                 if availity_payor:
                     client_url_number = claim_url.split('/')[-1]
