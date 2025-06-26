@@ -60,11 +60,9 @@ else:
         payorwise_providerDf_dict = payorwise_provider_df.set_index('Payer')[['Rendering Provider','Billing Provider']].to_dict(orient='index')
         staffmemberwise_providerDf_dict = staffmemberwise_provider_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
         availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[['Rendering Provider', 'Billing Provider']].to_dict(orient='index')
-        print(availitypayor_staffmember_dict)
         #Availity Payor
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=1)
         availitypayor = availitypayor_df['Availity Payors'].dropna().tolist()
-        print(availitypayor)
 
         # Initiate the Chrome instance
         chrome_option = webdriver.ChromeOptions()
@@ -117,7 +115,6 @@ else:
             col_name = scrubbing_sheet.cell(row=1, column=col).value
             if col_name:
                 data_columns[col_name.strip()] = col
-        print(data_columns)
         for row in range(2, scrubbing_sheet.max_row + 1):
 
             is_billed = scrubbing_sheet.cell(row=row, column=data_columns['Is Billed']).value
@@ -193,7 +190,7 @@ else:
                                 try:
                                     client_id_element = WebDriverWait(driver,30).until(EC.visibility_of_element_located((By.XPATH,"//div[@data-aqa='ClientID']//div[2]")))
                                     client_id_element_number = client_id_element.text
-                                    # print(f"Captured client ID: {client_id_element_number}")
+
                                 except:
                                     driver.back()
                                     found_data = False
@@ -369,7 +366,7 @@ else:
 
                 daigonis_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,"(//form//div[@class='content']//div)[1]")))
                 daignosis_text = daigonis_element.text.strip()
-                print(daignosis_text)
+
                 # time.sleep(2)
                 close_dxTab_element = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='ModalCloseButton']")))
                 close_dxTab_element.click()
@@ -406,7 +403,6 @@ else:
                     if availity_payor:
                         ### capture the DX Code for availity Portal Purpose
                         dxcodes = re.findall(r"\(([^)]+)\)", daignosis_text)
-                        print(f"DX:{dxcodes}")
                         dxcodes = [code.replace(".", "") for code in dxcodes]
                         merged_dxcodes = ",".join(dxcodes)
 
@@ -565,18 +561,15 @@ else:
                     insurance_table_element = WebDriverWait(driver, 60).until(
                         EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]//tr")))
 
-                    print(f"Insurance Table lenth : {len(insurance_table_element)}")
                     for tbl_row in range(1, len(insurance_table_element)+1):
 
                         payorname_row_element = WebDriverWait(driver, 60).until(
                             EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='provider'])[{tbl_row}]")))
                         payorname = payorname_row_element.text
-                        print(f"payorname : {payorname}")
 
                         payor_status_element = WebDriverWait(driver, 60).until(
                             EC.presence_of_element_located((By.XPATH, f"(//td[@data-aqa='status'])[{tbl_row}]//div//div")))
                         payor_status = payor_status_element.text
-                        print(f"payor_status : {payor_status}")
 
                         if payorname in availitypayor and payor_status == "Active":
                             insurance_id_check = True
