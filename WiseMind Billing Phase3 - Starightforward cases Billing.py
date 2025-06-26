@@ -577,7 +577,7 @@ else:
                         if payorname in availitypayor and payor_status == "Active":
                             insurance_id_check = True
                             insurance_id_element = WebDriverWait(driver, 60).until(
-                                EC.visibility_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='insuredIdNumber']")))
+                                EC.visibility_of_element_located((By.XPATH, f"(//td[@data-aqa='insuredIdNumber'])[{tbl_row}]")))
                             insurance_id = insurance_id_element.get_attribute("value")
                             break
                         else:
