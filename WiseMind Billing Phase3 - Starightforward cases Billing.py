@@ -591,7 +591,7 @@ else:
 
                             headers = ["Client Name", "Client ID Number", "Date/Time", "Service Type", "Staff Member(s)", "Payor Name", "First Name", "Last Name", "DOB", "Gender", "Street", "City", "State", "ZIP Code", "Claim Invoice Number", "Place of Service", "DX Code", "Charge Amount","Quantity"]
                             for col_num, headers in enumerate(headers, start=1):
-                                bcbs_logsheet.cells(row=1, column=col_num, value=headers)
+                                bcbs_logsheet.cell(row=1, column=col_num, value=headers)
 
                             bcbs_logbook.save(bcbs_file_path)
                         else:
