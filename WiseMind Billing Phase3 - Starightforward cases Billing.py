@@ -1,4 +1,5 @@
 import os.path
+from dataclasses import replace
 from datetime import datetime
 import pandas as pd
 import sys
@@ -147,7 +148,7 @@ else:
             insurance_id_check = False
 
             ### Check for Availity Payor
-            if payor_name in availity_payor:
+            if payor_name in availitypayor:
                 availity_payor = True
             else:
                 availity_payor = False
@@ -365,7 +366,7 @@ else:
                 dxcode_check_element.click()
                 time.sleep(1)
 
-                daigonis_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,"//form//div[@class='content']//p")))
+                daigonis_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,"(//form//div[@class='content']//div)[1]")))
                 daignosis_text = daigonis_element.text.strip()
                 print(daignosis_text)
                 # time.sleep(2)
@@ -404,6 +405,8 @@ else:
                     if availity_payor:
                         ### capture the DX Code for availity Portal Purpose
                         dxcodes = re.findall(r"\(([^)]+)\)", daignosis_text)
+                        print(f"DX:{dxcodes}")
+                        dxcodes = [code.replace(".", "") for code in dxcodes]
                         merged_dxcodes = ",".join(dxcodes)
 
                         ### Claim_DOS details Scrubbing ###
@@ -422,7 +425,7 @@ else:
 
 
 
-                        if payor_name in availitypayor_staffmember_dict:
+                        if payor_name in availitypayor:
                             if staff_member in availitypayor_staffmember_dict:
                                 rendering_provider = availitypayor_staffmember_dict[staff_member]['Rendering Provider']
                                 billing_provider = availitypayor_staffmember_dict[staff_member]['Billing Provider']
@@ -505,7 +508,7 @@ else:
                 print(f"❌ DOS: ({extracted_dos_date}) does not match. No claim entry found in the service table.")
                 scrubbing_sheet.cell(row=row, column=data_columns['Exceptions']).value = "No claims are present in particular DOS"
                 continue
-            if status == "Late Cancel" or status == "No Show":
+            if availity_payor or status == "Late Cancel" or status == "No Show":
                 save_element = WebDriverWait(driver, 30).until(
                     EC.presence_of_element_located((By.XPATH, "(//button[@data-aqa='saveInvoice'])[1]")))
                 actions.move_to_element(save_element).click().perform()
@@ -558,25 +561,25 @@ else:
                     insurance_table_element = WebDriverWait(driver, 60).until(
                         EC.presence_of_all_elements_located((By.XPATH, "(//table[@class='k-grid-table'])[1]//tr")))
 
-                    if len(insurance_table_element):
-                        for tbl_row in range(1, len(insurance_table_element)+1):
+                    print(f"Insurance Table lenth : {len(insurance_table_element)}")
+                    for tbl_row in range(1, len(insurance_table_element)+1):
 
-                            payorname_row_element = WebDriverWait(driver, 60).until(
-                                EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='provider']")))
-                            payorname = payorname_row_element.get_attribute("value")
+                        payorname_row_element = WebDriverWait(driver, 60).until(
+                            EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='provider']")))
+                        payorname = payorname_row_element.get_attribute("value")
 
-                            payor_status_element = WebDriverWait(driver, 60).until(
-                                EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='status']//div[@class='azk_cy azk_a1 azk_kl']")))
-                            payor_status = payor_status_element.get_attribute("value")
+                        payor_status_element = WebDriverWait(driver, 60).until(
+                            EC.presence_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='status']//div[@class='azk_cy azk_a1 azk_kl']")))
+                        payor_status = payor_status_element.get_attribute("value")
 
-                            if payorname in availitypayor and payor_status == "Active":
-                                insurance_id_check = True
-                                insurance_id_element = WebDriverWait(driver, 60).until(
-                                    EC.visibility_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='insuredIdNumber']")))
-                                insurance_id = insurance_id_element.get_attribute("value")
-                                break
-                            else:
-                                continue
+                        if payorname in availitypayor and payor_status == "Active":
+                            insurance_id_check = True
+                            insurance_id_element = WebDriverWait(driver, 60).until(
+                                EC.visibility_of_element_located((By.XPATH, f"(//table[@class='k-grid-table'])[1]//tr{tbl_row}//td[@data-aqa='insuredIdNumber']")))
+                            insurance_id = insurance_id_element.get_attribute("value")
+                            break
+                        else:
+                            continue
 
                     if availity_payor and insurance_id_check:
                         if not os.path.exists(bcbs_file_path):
