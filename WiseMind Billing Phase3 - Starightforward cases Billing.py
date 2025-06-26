@@ -38,7 +38,7 @@ else:
         from selenium.common.exceptions import StaleElementReferenceException
         from selenium.webdriver.common.keys import Keys
         import re
-        from openpyxl import workbook, load_workbook
+        from openpyxl import Workbook, load_workbook
 
         # Read Configuration Sheet with openpyxl & Pandas module
         config_sheet_path = r"Z:\Wisemind\Charge Entry -Billing\Automation Config File\ConfigSheet.xlsx"
