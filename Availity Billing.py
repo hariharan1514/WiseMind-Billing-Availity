@@ -27,6 +27,7 @@ else:
     else:
         print("Good to go !!!")
         import time
+        import openpyxl
         from openpyxl import Workbook, load_workbook
         from selenium import webdriver
         from selenium.webdriver.ie.service import Service
@@ -44,11 +45,14 @@ else:
         master_workbook = load_workbook(config_sheet_path, data_only=True)
         password_sheet = master_workbook[master_workbook.sheetnames[0]]
         username = password_sheet['B5'].value
+        print(f"username : {username}")
         password = password_sheet['B6'].value
+        print(f"password : {password}")
 
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=4)
         availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[
             ['Availity Rendering Provider', 'Availity Billing Provider']].to_dict(orient='index')
+        print(f"availitypayor_staffmember_dict : {availitypayor_staffmember_dict}")
 
         # Initiate the Chrome instance
         chrome_option = webdriver.ChromeOptions()
@@ -76,39 +80,316 @@ else:
             EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Sign In']")))
         login_button_element.click()
 
-        # 2 Step Authentication
-        textme_button_element = WebDriverWait(driver, 60).until(
-            EC.element_to_be_clickable((By.XPATH, "(//span//span[@class='css-1qiat4j'])[1]")))
-        print("finded")
-        driver.execute_script("arguments[0].click();", textme_button_element)
-        # textme_button_element.click()
-
-        continue_button_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Continue']")))
-        continue_button_element.click()
-
-        autentication_code = int(input("Kindly Enter the OTP Code :"))
-        time.sleep(10)
-
-        code_box_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@id='code']")))
-        code_box_element.send_keys(autentication_code)
-
-        autentication_continue_button_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Continue']")))
-        autentication_continue_button_element.click()
+        code = input("Please enter the code manually and hit enter here:")
+        time.sleep(7)
+        popupCheck = input(
+            "Please clear all pop content then hit enter if not pop up content then go ahead and hit enter:")
+        time.sleep(7)
 
         try:
-            confirmation_continue_button_element = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Continue']")))
-            confirmation_continue_button_element.click()
-        except:
-            pass
-
-        try:
-            portalerror_element = WebDriverWait(driver, 90).until(
+            portalerror_element = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@class='card-title']")))
             print("Oops! Something went wrong. Please try logging in again later.")
             driver.quit()
             sys.exit()
         except:
             pass
+
+        claim&encounters_status_button = WebDriverWait(driver, 60).until(
+                EC.presence_of_element_located((By.XPATH, "//h3[normalize-space()='Claims & Encounters']")))
+        claim_status_button.click()
+        time.sleep(3)
+
+        availity_billing_wb = load_workbook(bcbs_file_path, data_only=True)
+        availity_billing_ws = availity_billing_wb.active
+
+        ### Add Needed columns
+        needed_clms = ["Transaction Number", "Status"]
+        availity_billing_wb_headers = [cell.value for cell in availity_billing_ws[1]]
+        next_col_index = len(availity_billing_wb_headers) + 1
+        for col in needed_clms:
+            if col not in availity_billing_wb_headers:
+                availity_billing_ws.cell(row=1, column=next_col_index, value=col)
+                next_col_index += 1
+        availity_billing_wb.save(bcbs_file_path)
+
+        ### Build a dictionary mapping header names to column indices
+        columns = {}
+        for col in range(1, availity_billing_ws.max_column + 1):
+            col_name = availity_billing_ws.cell(row=1, column=col).value
+            if col_name:
+                columns[col_name.strip()] = col
+
+        for row in range(2, availity_billing_ws.max_row + 1):
+
+            status = availity_billing_ws.cell(row=row, column=columns['Status']).value
+
+            client_name = availity_billing_ws.cell(row=row, column=columns['Client Name']).value
+            client_id_number = availity_billing_ws.cell(row=row, column=columns['Client ID Number']).value
+            service_date = availity_billing_ws.cell(row=row, column=columns['Date/Time']).value
+            cpt_code = availity_billing_ws.cell(row=row, column=columns['Service Type']).value
+            staffmember = availity_billing_ws.cell(row=row, column=columns['Staff Member(s)']).value
+            payor_name = availity_billing_ws.cell(row=row, column=columns['Payor Name']).value
+            first_name = availity_billing_ws.cell(row=row, column=columns['First Name']).value
+            last_name = availity_billing_ws.cell(row=row, column=columns['Last Name']).value
+            dob = availity_billing_ws.cell(row=row, column=columns['DOB']).value
+            gender = availity_billing_ws.cell(row=row, column=columns['Gender']).value
+            street = availity_billing_ws.cell(row=row, column=columns['Street']).value
+            city = availity_billing_ws.cell(row=row, column=columns['City']).value
+            state = availity_billing_ws.cell(row=row, column=columns['State']).value
+            zip_code = availity_billing_ws.cell(row=row, column=columns['ZIP Code']).value
+            claim_invoice_number = availity_billing_ws.cell(row=row, column=columns['Claim Invoice Number']).value
+            insurance_number = availity_billing_ws.cell(row=row, column=columns['Insurance Number']).value
+            place_of_service = availity_billing_ws.cell(row=row, column=columns['Place of Service']).value
+            dx_code = availity_billing_ws.cell(row=row, column=columns['DX Code']).value
+            charge_amount = availity_billing_ws.cell(row=row, column=columns['Charge Amount']).value
+            quantity = availity_billing_ws.cell(row=row, column=columns['Quantity']).value
+
+
+            ## Insurance Company/Benefit Plan Information ###
+
+            organization_element = WebDriverWait(driver, 60).until(
+                    EC.presence_of_element_located((By.XPATH, "//input[@name='organization']")))
+            organization_element.click()
+            organization_element.clear()
+            organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            claim_type_element = WebDriverWait(driver, 60).until(
+                    EC.element_to_be_clickable((By.XPATH, "//input[@name='transactionType']")))
+            claim_type_element.click()
+            claim_type_element.clear()
+            claim_type_element.send_keys("ANTHEM BCBS NY")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            payor_type_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable( (By.XPATH, "//input[@name='payer']")))
+            payor_type_element.click()
+            payor_type_element.clear()
+            payor_type_element.send_keys("")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            try:
+                loading_element_check = WebDriverWait(driver, 60).until(
+                    EC.element_to_be_clickable((By.XPATH, "// input[ @ name = 'patient.lastName']")))
+            except:
+                pass
+
+
+            resSequence_type_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='responsibilitySequence']")))
+            resSequence_type_element.click()
+            resSequence_type_element.clear()
+            resSequence_type_element.send_keys("Primary")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            ### PATIENT INFORMATION ###
+
+            lastname_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='responsibilitySequence']")))
+            lastname_element.send_keys(last_name)
+            time.sleep(1)
+
+            firstname_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.firstName']")))
+            firstname_element.send_keys(first_name)
+
+            dob_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.birthDate']")))
+            dob_element.send_keys(dob)
+
+            ### Gender Need to bee add logic
+
+            adress_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.addressLine1']")))
+            adress_element.send_keys(street)
+
+            city_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.city']")))
+            city_element.send_keys(city)
+
+            state_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.stateCode']")))
+            state_element.send_keys("New York")
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            zipcode_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.zipCode']")))
+            state_element.send_keys(zip_code)
+
+            ### SUBSCRIBER INFORMATION ###
+
+            insuranceid_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='subscriber.memberId']")))
+            insuranceid_element.send_keys(insurance_number)
+
+            authorized_plan_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='subscriber.memberId']")))
+            authorized_plan_element.send_keys("Y -")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            ### BILLING PROVIDER INFORMATION ###
+
+            if staff_member in availitypayor_staffmember_dict:
+                rendering_provider = availitypayor_staffmember_dict[staff_member]['Rendering Provider']
+                billing_provider = availitypayor_staffmember_dict[staff_member]['Billing Provider']
+            else:
+                print(
+                    f"The Staff name ({staff_member}) is missing in the Staff Member table masters. Kindly check and re run the script")
+                sys.exit()
+
+            rendering_provider_extracted = re.sub(r"\s*\(NPI:.*\)", "", rendering_provider).strip()
+            billing_provider_extracted = re.sub(r"\s*\(NPI:.*\)", "", billing_provider).strip()
+
+            select_billing_provider_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@id=':rb:']")))
+            select_billing_provider_element.send_keys(billing_provider_extracted)
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            if row == 1 :
+                ### Add Rendering Provider ###
+                add_renderingprovider_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Add Rendering Provider']")))
+                add_renderingprovider_element.click()
+
+            ### RENDERING PROVIDER ###
+            select_rendering_provider_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r1a:']")))
+            select_rendering_provider_element.send_keys(rendering_provider_extracted)
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            ### CLAIM INFORMATION ###
+
+            patient_contolnumber_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.controlNumber']")))
+            patient_contolnumber_element.click()
+            patient_contolnumber_element.send_keys(claim_invoice_number)
+
+            place_of_service_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r1a:']")))
+            place_of_service_element.click()
+            place_of_service_element.send_keys(place_of_service)
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            frequencytype_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.frequencyTypeCode']")))
+            frequencytype_element.click()
+            frequencytype_element.send_keys("1")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            provider_accepts_assignment_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.providerAcceptAssignmentCode']")))
+            provider_accepts_assignment_element.click()
+            provider_accepts_assignment_element.send_keys("A -")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            release_of_information_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.providerAcceptAssignmentCode']")))
+            release_of_information_element.click()
+            release_of_information_element.send_keys("Y -")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            provider_signature_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.providerAcceptAssignmentCode']")))
+            provider_signature_element.click()
+            provider_signature_element.send_keys("Yes")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            ### DIAGNOSIS CODES ###
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

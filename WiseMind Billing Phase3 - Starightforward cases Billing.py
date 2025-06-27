@@ -587,7 +587,7 @@ else:
                             bcbs_logbook = Workbook()
                             bcbs_logsheet = bcbs_logbook.active
 
-                            headers = ["Client Name", "Client ID Number", "Date/Time", "Service Type", "Staff Member(s)", "Payor Name", "First Name", "Last Name", "DOB", "Gender", "Street", "City", "State", "ZIP Code", "Claim Invoice Number", "Place of Service", "DX Code", "Charge Amount","Quantity"]
+                            headers = ["Client Name", "Client ID Number", "Date/Time", "Service Type", "Staff Member(s)", "Payor Name", "First Name", "Last Name", "DOB", "Gender", "Street", "City", "State", "ZIP Code", "Claim Invoice Number", "Insurance Number", "Place of Service", "DX Code", "Charge Amount","Quantity"]
                             for col_num, headers in enumerate(headers, start=1):
                                 bcbs_logsheet.cell(row=1, column=col_num, value=headers)
 
@@ -620,6 +620,7 @@ else:
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["State"]).value = state
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["ZIP Code"]).value = zip_code
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Claim Invoice Number"]).value = invoice_number
+                        bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Insurance Number"]).value = insurance_id
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Place of Service"]).value = place_of_service
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["DX Code"]).value = merged_dxcodes
                         bcbs_logsheet.cell(row=max_row, column=bcbs_data_column["Charge Amount"]).value = insurance_amount
