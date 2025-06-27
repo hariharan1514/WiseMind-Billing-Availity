@@ -108,7 +108,7 @@ if configSheetPath:
             removePreviousDate_df = removeBlanks_df[removeBlanks_df['Date/Time'].str.match(filterDate)]
 
         # Remove SelfPay Payors
-        remove_selfpay_payors = removePreviousDate_df[~removePreviousDate_df['Payor Name'] == "Self Pay"]
+        remove_selfpay_payors = removePreviousDate_df[removePreviousDate_df['Payor Name'] != "Self Pay"]
 
         # # Drop Availity Payors
         # dropAvailityPayor_df = removePreviousDate_df[~removePreviousDate_df['Payor Name'].isin(availityPayor)]

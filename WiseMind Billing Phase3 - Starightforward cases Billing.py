@@ -514,8 +514,10 @@ else:
                 sf_billing_wb.save(billing_file_path)
                 if availity_payor:
                     print(f"✅ Billing invoice for patient ({client_name}) has been successfully created.")
+                    print("\n")
                 else:
                     print(f"✅ Billing for patient ({client_name}) has been successfully moved to insurance.")
+                    print("\n")
 
                 if availity_payor:
                     client_url_number = claim_url.split('/')[-1]
