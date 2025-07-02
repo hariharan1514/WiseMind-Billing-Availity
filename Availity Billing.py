@@ -413,10 +413,7 @@ else:
             time.sleep(1)
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
-
-
             ## DX Pointer logig need to be work ##
-
 
             charge_amount_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.amount']")))
