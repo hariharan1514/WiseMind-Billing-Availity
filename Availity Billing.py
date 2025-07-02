@@ -339,28 +339,37 @@ else:
 
             if len(dx_code_list) > 1 :
                 for code in range(0, len(dx_code_list), +1):
+                    if code == 0:
+                        dxcode_box_element = WebDriverWait(driver, 60).until(
+                            EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.diagnoses.0.code']")))
+                        dxcode_box_element.click()
+                        dxcode_box_element.send_keys(dx_code_list[code])
+                        time.sleep(2)
+                        driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+                        time.sleep(1)
+                        driver.switch_to.active_element.send_keys(Keys.ENTER)
+                    else:
+                        add_button_element = WebDriverWait(driver, 60).until(
+                            EC.element_to_be_clickable((By.XPATH, "//button[@aria-label='Add button']")))
+                        add_button_element.click()
 
-
-
-
-
-
-
-
-
-
-
-
+                        dxcode_box_element = WebDriverWait(driver, 60).until(
+                            EC.element_to_be_clickable((By.XPATH, f"//input[@name='claimInformation.diagnoses.{code}.code']")))
+                        dxcode_box_element.click()
+                        dxcode_box_element.send_keys(dx_code_list[code])
+                        time.sleep(2)
+                        driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+                        time.sleep(1)
+                        driver.switch_to.active_element.send_keys(Keys.ENTER)
             else:
                 dxcode_box_element = WebDriverWait(driver, 60).until(
                     EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.diagnoses.0.code']")))
-            dxcode_box_element.click()
-            dxcode_box_element.send_keys(dx_code)
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
-
+                dxcode_box_element.click()
+                dxcode_box_element.send_keys(dx_code)
+                time.sleep(2)
+                driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+                time.sleep(1)
+                driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             ### LINES ###
 
@@ -393,7 +402,21 @@ else:
             time.sleep(1)
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
+            extracted_procedure_code = cpt_code.split(":")[0]
+
+            procedurecode_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.procedureCode']")))
+            procedurecode_element.click()
+            procedurecode_element.send_keys(extracted_procedure_code)
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+
+
             ## DX Pointer logig need to be work ##
+
 
             charge_amount_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.amount']")))
