@@ -59,7 +59,7 @@ else:
         driver.maximize_window()
         actions = ActionChains(driver)
 
-        driver.get("https://apps.availity.com/web/onboarding")  # Launching the router
+        driver.get("https://apps.availity.com/web/onboarding/availity-fr-ui/#/login")  # Launching the router
 
         # send the username & password to the represented field
         try:
