@@ -45,14 +45,12 @@ else:
         master_workbook = load_workbook(config_sheet_path, data_only=True)
         password_sheet = master_workbook[master_workbook.sheetnames[0]]
         username = password_sheet['B5'].value
-        print(f"username : {username}")
         password = password_sheet['B6'].value
-        print(f"password : {password}")
 
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=4)
         availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[
             ['Availity Rendering Provider', 'Availity Billing Provider']].to_dict(orient='index')
-        print(f"availitypayor_staffmember_dict : {availitypayor_staffmember_dict}")
+        # print(f"availitypayor_staffmember_dict : {availitypayor_staffmember_dict}")
 
         # Initiate the Chrome instance
         chrome_option = webdriver.ChromeOptions()
@@ -63,37 +61,37 @@ else:
 
         driver.get("https://apps.availity.com/web/onboarding")  # Launching the router
 
-        # send the username & password to the represented field
-        try:
-            username_element = WebDriverWait(driver, 60).until(
-                EC.visibility_of_element_located((By.XPATH, "//input[@id='userId']")))
-            username_element.send_keys(username)
-        except:
-            print("Login issue, Please login after some time.!")
-            sys.exit()
-
-        password_element = WebDriverWait(driver, 30).until(
-            EC.visibility_of_element_located((By.XPATH, "//input[@id='password']")))
-        password_element.send_keys(password)
-
-        login_button_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Sign In']")))
-        login_button_element.click()
-
-        code = input("Please enter the code manually and hit enter here:")
-        time.sleep(7)
-        popupCheck = input(
-            "Please clear all pop content then hit enter if not pop up content then go ahead and hit enter:")
-        time.sleep(7)
-
-        try:
-            portalerror_element = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[@class='card-title']")))
-            print("Oops! Something went wrong. Please try logging in again later.")
-            driver.quit()
-            sys.exit()
-        except:
-            pass
+        # # send the username & password to the represented field
+        # try:
+        #     username_element = WebDriverWait(driver, 60).until(
+        #         EC.visibility_of_element_located((By.XPATH, "//input[@id='userId']")))
+        #     username_element.send_keys(username)
+        # except:
+        #     print("Login issue, Please login after some time.!")
+        #     sys.exit()
+        #
+        # password_element = WebDriverWait(driver, 30).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//input[@id='password']")))
+        # password_element.send_keys(password)
+        #
+        # login_button_element = WebDriverWait(driver, 10).until(
+        #     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Sign In']")))
+        # login_button_element.click()
+        #
+        # code = input("Please enter the code manually and hit enter here:")
+        # time.sleep(7)
+        # popupCheck = input(
+        #     "Please clear all pop content then hit enter if not pop up content then go ahead and hit enter:")
+        # time.sleep(7)
+        #
+        # try:
+        #     portalerror_element = WebDriverWait(driver, 10).until(
+        #         EC.presence_of_element_located((By.XPATH, "//div[@class='card-title']")))
+        #     print("Oops! Something went wrong. Please try logging in again later.")
+        #     driver.quit()
+        #     sys.exit()
+        # except:
+        #     pass
 
         claim_encounters_status_button = WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located((By.XPATH, "//h3[normalize-space()='Claims & Encounters']")))
@@ -415,6 +413,18 @@ else:
 
             ## DX Pointer logig need to be work ##
 
+            dxcode_count = (len(dx_code_list))
+
+            for code_index in range(1, len(dx_code_list), +1):
+                dxpointer_element = WebDriverWait(driver, 60).until(
+                    EC.element_to_be_clickable((By.XPATH,f"//input[@name='claimInformation.serviceLines.0.diagnosisCodePointer{code_index}']")))
+                dxpointer_element.click()
+                dxpointer_element.send_keys(dx_code_list[code_index])
+                time.sleep(5)
+                driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+                time.sleep(1)
+                driver.switch_to.active_element.send_keys(Keys.ENTER)
+
             charge_amount_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.amount']")))
             charge_amount_element.click()
@@ -425,7 +435,34 @@ else:
             quantity_element.click()
             quantity_element.send_keys(quantity)
 
-            ### Continue & Submitt & Transaction ID logig need to done tmrw ###
+            ### Continue & Submitt & Transaction ID logic need to done. ###
+
+            continue_button_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
+            continue_button_element.click()
+
+            submit_button = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Submit']")))
+            submit_button.click()
+
+            transaction_id_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
+            transaction_id = transaction_id_element.text
+
+            availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
+            availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
+
+            new_claim = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
+            new_claim.click()
+            time.sleep(5)
+
+
+
+
+
+
+
 
 
 
