@@ -95,7 +95,7 @@ else:
         except:
             pass
 
-        claim&encounters_status_button = WebDriverWait(driver, 60).until(
+        claim_encounters_status_button = WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located((By.XPATH, "//h3[normalize-space()='Claims & Encounters']")))
         claim_status_button.click()
         time.sleep(3)
