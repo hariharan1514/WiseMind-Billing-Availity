@@ -94,8 +94,8 @@ else:
             pass
 
         claim_encounters_status_button = WebDriverWait(driver, 60).until(
-                EC.presence_of_element_located((By.XPATH, "//h3[normalize-space()='Claims & Encounters']")))
-        claim_status_button.click()
+                EC.element_to_be_clickable((By.XPATH, "//h3[normalize-space()='Claims & Encounters']")))
+        claim_encounters_status_button.click()
         time.sleep(3)
 
         availity_billing_wb = load_workbook(bcbs_file_path, data_only=True)
