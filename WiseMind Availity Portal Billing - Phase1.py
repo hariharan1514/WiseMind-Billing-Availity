@@ -46,6 +46,7 @@ else:
         password_sheet = master_workbook[master_workbook.sheetnames[0]]
         username = password_sheet['B5'].value
         password = password_sheet['B6'].value
+        claim_encounter_url = password_sheet['B10'].value
 
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=4)
         availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[
@@ -93,10 +94,44 @@ else:
         except:
             pass
 
-        claim_encounters_status_button = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//h3[normalize-space()='Claims & Encounters']")))
-        claim_encounters_status_button.click()
+        # claim_encounters_status_button = WebDriverWait(driver, 60).until(
+        #     EC.element_to_be_clickable((By.XPATH, "//a[@title='Claims & Encounters']")))
+        # claim_encounters_status_button.click()
         time.sleep(3)
+        driver.get(claim_encounter_url)
+        time.sleep(3)
+
+        ## Insurance Company/Benefit Plan Information ###
+
+        organization_element = WebDriverWait(driver, 60).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='organization']")))
+        organization_element.click()
+        organization_element.clear()
+        organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
+        time.sleep(2)
+        driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+        time.sleep(1)
+        driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+        claim_type_element = WebDriverWait(driver, 60).until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@name='transactionType']")))
+        claim_type_element.click()
+        claim_type_element.clear()
+        claim_type_element.send_keys("Professional Claim")
+        time.sleep(2)
+        driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+        time.sleep(1)
+        driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+        payor_type_element = WebDriverWait(driver, 60).until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@name='payer']")))
+        payor_type_element.click()
+        payor_type_element.clear()
+        payor_type_element.send_keys("ANTHEM BCBS NY")
+        time.sleep(2)
+        driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+        time.sleep(1)
+        driver.switch_to.active_element.send_keys(Keys.ENTER)
 
         availity_billing_wb = load_workbook(bcbs_file_path, data_only=True)
         availity_billing_ws = availity_billing_wb.active
@@ -144,54 +179,24 @@ else:
             quantity = availity_billing_ws.cell(row=row, column=columns['Quantity']).value
 
 
-            ## Insurance Company/Benefit Plan Information ###
-
-            organization_element = WebDriverWait(driver, 60).until(
-                    EC.presence_of_element_located((By.XPATH, "//input[@name='organization']")))
-            organization_element.click()
-            organization_element.clear()
-            organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
-
-            claim_type_element = WebDriverWait(driver, 60).until(
-                    EC.element_to_be_clickable((By.XPATH, "//input[@name='transactionType']")))
-            claim_type_element.click()
-            claim_type_element.clear()
-            claim_type_element.send_keys("ANTHEM BCBS NY")
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
-
-            payor_type_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable( (By.XPATH, "//input[@name='payer']")))
-            payor_type_element.click()
-            payor_type_element.clear()
-            payor_type_element.send_keys("")
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
-
-            try:
-                loading_element_check = WebDriverWait(driver, 60).until(
-                    EC.element_to_be_clickable((By.XPATH, "// input[ @ name = 'patient.lastName']")))
-            except:
-                pass
 
 
-            resSequence_type_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@name='responsibilitySequence']")))
-            resSequence_type_element.click()
-            resSequence_type_element.clear()
-            resSequence_type_element.send_keys("Primary")
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
+            # try:
+            #     loading_element_check = WebDriverWait(driver, 60).until(
+            #         EC.element_to_be_clickable((By.XPATH, "// input[ @ name = 'patient.lastName']")))
+            # except:
+            #     pass
+
+
+            # resSequence_type_element = WebDriverWait(driver, 60).until(
+            #     EC.element_to_be_clickable((By.XPATH, "//input[@name='responsibilitySequence']")))
+            # resSequence_type_element.click()
+            # resSequence_type_element.clear()
+            # resSequence_type_element.send_keys("Primary")
+            # time.sleep(2)
+            # driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            # time.sleep(1)
+            # driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             ### PATIENT INFORMATION ###
 
