@@ -97,14 +97,14 @@ else:
         # claim_encounters_status_button = WebDriverWait(driver, 60).until(
         #     EC.element_to_be_clickable((By.XPATH, "//a[@title='Claims & Encounters']")))
         # claim_encounters_status_button.click()
-        time.sleep(3)
+        # time.sleep(3)
         driver.get(claim_encounter_url)
         time.sleep(3)
 
         ## Insurance Company/Benefit Plan Information ###
 
         organization_element = WebDriverWait(driver, 60).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@name='organization']")))
+            EC.element_to_be_clickable((By.XPATH, "//input[@name='organization']")))
         organization_element.click()
         organization_element.clear()
         organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
