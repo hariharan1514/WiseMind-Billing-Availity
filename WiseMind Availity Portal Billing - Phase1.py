@@ -94,12 +94,8 @@ else:
         except:
             pass
 
-        # claim_encounters_status_button = WebDriverWait(driver, 60).until(
-        #     EC.element_to_be_clickable((By.XPATH, "//a[@title='Claims & Encounters']")))
-        # claim_encounters_status_button.click()
-        # time.sleep(3)
         driver.get(claim_encounter_url)
-        time.sleep(10)
+        time.sleep(3)
 
         ## Insurance Company/Benefit Plan Information ###
 
@@ -182,26 +178,6 @@ else:
             charge_amount = availity_billing_ws.cell(row=row, column=columns['Charge Amount']).value
             quantity = availity_billing_ws.cell(row=row, column=columns['Quantity']).value
 
-
-
-
-            # try:
-            #     loading_element_check = WebDriverWait(driver, 60).until(
-            #         EC.element_to_be_clickable((By.XPATH, "// input[ @ name = 'patient.lastName']")))
-            # except:
-            #     pass
-
-
-            # resSequence_type_element = WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "//input[@name='responsibilitySequence']")))
-            # resSequence_type_element.click()
-            # resSequence_type_element.clear()
-            # resSequence_type_element.send_keys("Primary")
-            # time.sleep(2)
-            # driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            # time.sleep(1)
-            # driver.switch_to.active_element.send_keys(Keys.ENTER)
-
             ### PATIENT INFORMATION ###
 
             lastname_element = WebDriverWait(driver, 60).until(
@@ -218,7 +194,15 @@ else:
             dob_element.send_keys(dob)
 
             ### Gender Need to bee add logic
-            gender_element =
+            gender_element = WebDriverWait(driver, 60).until(
+                EC.visibility_of_element_located((By.XPATH, "//input[@name='organization']")))
+            organization_element.click()
+            organization_element.clear()
+            organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             adress_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.addressLine1']")))
@@ -447,25 +431,28 @@ else:
 
             ### Continue & Submitt & Transaction ID logic need to done. ###
 
-            continue_button_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
-            continue_button_element.click()
+            # continue_button_element = WebDriverWait(driver, 60).until(
+            #     EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
+            # continue_button_element.click()
+            #
+            # submit_button = WebDriverWait(driver, 60).until(
+            #     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Submit']")))
+            # submit_button.click()
+            #
+            # transaction_id_element = WebDriverWait(driver, 60).until(
+            #     EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
+            # transaction_id = transaction_id_element.text
+            #
+            # availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
+            # availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
+            #
+            # new_claim = WebDriverWait(driver, 60).until(
+            #     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
+            # new_claim.click()
+            # time.sleep(5)
 
-            submit_button = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Submit']")))
-            submit_button.click()
-
-            transaction_id_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
-            transaction_id = transaction_id_element.text
-
-            availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
-            availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
-
-            new_claim = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
-            new_claim.click()
-            time.sleep(5)
+            driver.get(claim_encounter_url)
+            time.sleep(3)
 
 
 
