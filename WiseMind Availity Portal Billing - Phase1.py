@@ -278,9 +278,11 @@ else:
                 EC.element_to_be_clickable((By.XPATH, "//input[@id=':r14:']")))
             select_address_element.send_keys("77 North Centre Ave")
             time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
+            address = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), '77 North Centre Ave')]")))
+            address.click()
+            # driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            # time.sleep(1)
+            # driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             try:
                 select_rendering_provider_element = WebDriverWait(driver, 5).until(
@@ -459,12 +461,14 @@ else:
             submit_button.click()
 
             transaction_id_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
+                EC.presence_of_element_located((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
             transaction_id = transaction_id_element.text
+            print(transaction_id)
 
             availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
             availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
             availity_billing_wb.save(bcbs_file_path)
+            print(f"The Claim : {client_name} has been billed." )
 
             new_claim = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
