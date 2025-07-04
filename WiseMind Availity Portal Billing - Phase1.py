@@ -473,8 +473,6 @@ else:
             new_claim.click()
             time.sleep(5)
 
-            driver.get(claim_encounter_url)
-            time.sleep(3)
 
 
 
