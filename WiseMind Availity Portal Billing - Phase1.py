@@ -428,7 +428,7 @@ else:
                     EC.element_to_be_clickable((By.XPATH,f"//input[@name='claimInformation.serviceLines.0.diagnosisCodePointer{code_index+1}']")))
                 dxpointer_element.click()
                 dxpointer_element.send_keys(dx_code_list[code_index])
-                time.sleep(5)
+                time.sleep(2)
                 driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
                 time.sleep(1)
                 driver.switch_to.active_element.send_keys(Keys.ENTER)
@@ -459,11 +459,12 @@ else:
 
             availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
             availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
+            availity_billing_wb.save(bcbs_file_path)
 
             new_claim = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
             new_claim.click()
-            time.sleep(5)
+            time.sleep(3)
 
 
 
