@@ -254,8 +254,8 @@ else:
             ### BILLING PROVIDER INFORMATION ###
 
             if staffmember in availitypayor_staffmember_dict:
-                rendering_provider = availitypayor_staffmember_dict[staffmember]['Rendering Provider']
-                billing_provider = availitypayor_staffmember_dict[staffmember]['Billing Provider']
+                rendering_provider = availitypayor_staffmember_dict[staffmember]['Availity Rendering Provider']
+                billing_provider = availitypayor_staffmember_dict[staffmember]['Availity Billing Provider']
             else:
                 print(
                     f"The Staff name ({staffmember}) is missing in the Staff Member table masters. Kindly check and re run the script")
