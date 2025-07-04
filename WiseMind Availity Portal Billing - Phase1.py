@@ -425,7 +425,7 @@ else:
 
             for code_index in range(0, len(dx_code_list), +1):
                 dxpointer_element = WebDriverWait(driver, 60).until(
-                    EC.element_to_be_clickable((By.XPATH,f"//input[@name='claimInformation.serviceLines.0.diagnosisCodePointer{code_index}']")))
+                    EC.element_to_be_clickable((By.XPATH,f"//input[@name='claimInformation.serviceLines.0.diagnosisCodePointer{code_index+1}']")))
                 dxpointer_element.click()
                 dxpointer_element.send_keys(dx_code_list[code_index])
                 time.sleep(5)
