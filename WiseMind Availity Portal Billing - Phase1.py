@@ -263,8 +263,11 @@ else:
                     f"The Staff name ({staffmember}) is missing in the Staff Member table masters. Kindly check and re run the script")
                 sys.exit()
 
-            rendering_provider_extracted = re.sub(r"\s*\(NPI:.*\)", "", rendering_provider).strip()
-            billing_provider_extracted = re.sub(r"\s*\(NPI:.*\)", "", billing_provider).strip()
+            # rendering_provider_extracted = re.sub(r"\s*\(NPI:.*\)", "", rendering_provider).strip()
+            # billing_provider_extracted = re.sub(r"\s*\(NPI:.*\)", "", billing_provider).strip()
+
+            rendering_provider_extracted = rendering_provider.split(",")[0].strip()
+            billing_provider_extracted = billing_provider.split(",")[0].strip()
 
             select_billing_provider_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@id=':rb:']")))
