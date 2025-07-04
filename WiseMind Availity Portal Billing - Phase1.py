@@ -51,7 +51,6 @@ else:
         availitypayor_df = pd.read_excel(config_sheet_path, sheet_name=4)
         availitypayor_staffmember_dict = availitypayor_df.set_index('Staff Members')[
             ['Availity Rendering Provider', 'Availity Billing Provider']].to_dict(orient='index')
-        # print(f"availitypayor_staffmember_dict : {availitypayor_staffmember_dict}")
 
         # Initiate the Chrome instance
         chrome_option = webdriver.ChromeOptions()
@@ -283,10 +282,13 @@ else:
             time.sleep(1)
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
-            if row == 2 :
+            try:
+                select_rendering_provider_element = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable((By.XPATH, "//input[@id=':r15:']")))
+            except:
                 ### Add Rendering Provider ###
                 add_renderingprovider_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Add Rendering Provider']")))
+                    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Add Rendering Provider']")))
                 add_renderingprovider_element.click()
 
             ### RENDERING PROVIDER ###
@@ -469,6 +471,11 @@ else:
             new_claim.click()
             time.sleep(3)
 
+        driver.switch_to.default_content()
+        logout = WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, "//a[@title='Logout']")))
+        logout.click()
+        time.sleep(10)
+        driver.quit()
 
 
 
