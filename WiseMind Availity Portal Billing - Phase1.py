@@ -235,7 +235,7 @@ else:
 
             zipcode_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.zipCode']")))
-            state_element.send_keys(zip_code)
+            zipcode_element.send_keys(zip_code)
 
             ### SUBSCRIBER INFORMATION ###
 
