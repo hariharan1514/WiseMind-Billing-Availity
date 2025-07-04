@@ -288,7 +288,7 @@ else:
 
             ### RENDERING PROVIDER ###
             select_rendering_provider_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r1a:']")))
+                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r15:']")))
             select_rendering_provider_element.send_keys(rendering_provider_extracted)
             time.sleep(2)
             driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
