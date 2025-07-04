@@ -464,8 +464,8 @@ else:
             submit_button.click()
 
             transaction_id_element = WebDriverWait(driver, 60).until(
-                EC.presence_of_element_located((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
-            transaction_id = transaction_id_element.get_attribute("value")
+                EC.visibility_of_element_located((By.XPATH, "(//p[contains(@class, 'MuiTypography-root') and contains(text(), 'Transaction ID')]/following-sibling::p")))
+            transaction_id = transaction_id_element.text.strip()
             print(transaction_id)
 
             availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
