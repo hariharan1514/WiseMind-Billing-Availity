@@ -453,25 +453,25 @@ else:
 
             ### Continue & Submitt & Transaction ID logic need to done. ###
 
-            # continue_button_element = WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
-            # continue_button_element.click()
-            #
-            # submit_button = WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Submit']")))
-            # submit_button.click()
-            #
-            # transaction_id_element = WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
-            # transaction_id = transaction_id_element.text
-            #
-            # availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
-            # availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
-            #
-            # new_claim = WebDriverWait(driver, 60).until(
-            #     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
-            # new_claim.click()
-            # time.sleep(5)
+            continue_button_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[@type='submit']")))
+            continue_button_element.click()
+
+            submit_button = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Submit']")))
+            submit_button.click()
+
+            transaction_id_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1enmd19'])[1]//p[2]")))
+            transaction_id = transaction_id_element.text
+
+            availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
+            availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
+
+            new_claim = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
+            new_claim.click()
+            time.sleep(5)
 
             driver.get(claim_encounter_url)
             time.sleep(3)
