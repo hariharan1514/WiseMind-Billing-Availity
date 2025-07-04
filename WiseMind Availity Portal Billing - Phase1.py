@@ -303,7 +303,7 @@ else:
             patient_contolnumber_element.send_keys(claim_invoice_number)
 
             place_of_service_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r1a:']")))
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.placeOfServiceCode']")))
             place_of_service_element.click()
             place_of_service_element.send_keys(place_of_service)
             time.sleep(2)
