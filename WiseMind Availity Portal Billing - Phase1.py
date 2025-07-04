@@ -106,11 +106,6 @@ else:
         organization_element = WebDriverWait(driver, 60).until(
             EC.visibility_of_element_located((By.XPATH, "//input[@name='organization']")))
         organization_element.clear()
-        time.sleep(1)
-        organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
-        time.sleep(2)
-        organization_element.clear()
-        time.sleep(1)
         organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
         time.sleep(2)
         driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
@@ -202,7 +197,7 @@ else:
 
                 gender_element = WebDriverWait(driver, 60).until(
                     EC.visibility_of_element_located((By.XPATH, "//input[@name='patient.genderCode']")))
-                organization_element.click()
+                gender_element.click()
                 gender_element.clear()
                 gender_element.send_keys(gender)
                 time.sleep(2)
