@@ -253,7 +253,7 @@ else:
 
             ### BILLING PROVIDER INFORMATION ###
 
-            if staff_member in availitypayor_staffmember_dict:
+            if staffmember in availitypayor_staffmember_dict:
                 rendering_provider = availitypayor_staffmember_dict[staff_member]['Rendering Provider']
                 billing_provider = availitypayor_staffmember_dict[staff_member]['Billing Provider']
             else:
