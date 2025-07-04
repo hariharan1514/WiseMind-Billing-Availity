@@ -85,7 +85,11 @@ else:
         exception_col_name = ["Active/Archived", "Transaction Status"]
         headers = [cell.value for cell in bcbs_sheet[1]]
         next_col_index = len(headers) + 1
-        bcbs_sheet.cell(row=1,column=next_col_index,value="Active/Archived")
+        for col in exception_col_name:
+            if col not in headers:
+                bcbs_sheet.cell(row=1,column=next_col_index,value=col)
+                next_col_index += 1
+
         bcbs_billing_wb.save(bcbs_file_path)
 
         ### Build a dictionary mapping header names to column indices
