@@ -99,12 +99,16 @@ else:
         # claim_encounters_status_button.click()
         # time.sleep(3)
         driver.get(claim_encounter_url)
-        time.sleep(3)
+        time.sleep(10)
 
         ## Insurance Company/Benefit Plan Information ###
 
+        billing_frame_element = WebDriverWait(driver, 60).until(
+            EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[@id='newBodyFrame']")))
+        driver.switch_to.frame(billing_frame_element)
+
         organization_element = WebDriverWait(driver, 60).until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@name='organization']")))
+            EC.visibility_of_element_located((By.XPATH, "//input[@name='organization']")))
         organization_element.click()
         organization_element.clear()
         organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
