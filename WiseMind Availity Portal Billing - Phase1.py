@@ -109,7 +109,7 @@ else:
 
         organization_element = WebDriverWait(driver, 60).until(
             EC.visibility_of_element_located((By.XPATH, "//input[@name='organization']")))
-        organization_element.click()
+        # organization_element.click()
         organization_element.clear()
         organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
         time.sleep(2)
@@ -205,7 +205,7 @@ else:
             ### PATIENT INFORMATION ###
 
             lastname_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@name='responsibilitySequence']")))
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.lastName']")))
             lastname_element.send_keys(last_name)
             time.sleep(1)
 
