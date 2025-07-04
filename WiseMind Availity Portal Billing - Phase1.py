@@ -272,7 +272,15 @@ else:
             time.sleep(1)
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
-            if row == 1 :
+            select_address_element = WebDriverWait(driver, 60).until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r14:']")))
+            select_address_element.send_keys("77 North Centre Ave")
+            time.sleep(2)
+            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
+            time.sleep(1)
+            driver.switch_to.active_element.send_keys(Keys.ENTER)
+
+            if row == 2 :
                 ### Add Rendering Provider ###
                 add_renderingprovider_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Add Rendering Provider']")))
