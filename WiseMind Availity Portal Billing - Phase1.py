@@ -105,9 +105,9 @@ else:
 
         organization_element = WebDriverWait(driver, 60).until(
             EC.visibility_of_element_located((By.XPATH, "//input[@name='organization']")))
+        organization_element.clear()
         organization_element.click()
         time.sleep(2)
-        organization_element.clear()
         organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
         time.sleep(2)
         driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
