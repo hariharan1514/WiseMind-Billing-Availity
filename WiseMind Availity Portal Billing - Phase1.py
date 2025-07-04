@@ -393,19 +393,11 @@ else:
                     EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.fromDate']")))
             service_from_date_element.click()
             service_from_date_element.send_keys(extracted_service_date)
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             service_to_date_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.toDate']")))
             service_to_date_element.click()
             service_to_date_element.send_keys(extracted_service_date)
-            time.sleep(2)
-            driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-            time.sleep(1)
-            driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             placeofservice_element = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.serviceLines.0.placeOfServiceCode']")))
@@ -431,7 +423,7 @@ else:
 
             dxcode_count = (len(dx_code_list))
 
-            for code_index in range(1, len(dx_code_list), +1):
+            for code_index in range(0, len(dx_code_list), +1):
                 dxpointer_element = WebDriverWait(driver, 60).until(
                     EC.element_to_be_clickable((By.XPATH,f"//input[@name='claimInformation.serviceLines.0.diagnosisCodePointer{code_index}']")))
                 dxpointer_element.click()
