@@ -82,7 +82,7 @@ else:
         bcbs_sheet = bcbs_billing_wb.active
 
         ### Add Exception Column if not present
-        exception_col_name = ["Active/Archived"]
+        exception_col_name = ["Active/Archived", "Transaction Status"]
         headers = [cell.value for cell in bcbs_sheet[1]]
         next_col_index = len(headers) + 1
         bcbs_sheet.cell(row=1,column=next_col_index,value="Active/Archived")
@@ -97,8 +97,9 @@ else:
         for row in range(2, bcbs_sheet.max_row + 1):
 
             status = bcbs_sheet.cell(row=row, column=data_columns['Status']).value
+            transaction_status = bcbs_sheet.cell(row=row, column=data_columns['Transaction Status']).value
             # exception = bcbs_sheet.cell(row=row, column=data_columns['Exceptions']).value
-            if status != "Yes" :
+            if status != "Yes" and transaction_status == "Transaction Number updated":
                 continue
 
             client_name = bcbs_sheet.cell(row=row, column=data_columns['Client Name']).value
@@ -264,11 +265,11 @@ else:
             ledger_btn_element = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH,"//a[@aria-label='Ledger']")))
             ledger_btn_element.click()
 
-            newinvoice_btn_element = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH,"//button[@data-aqa='btnNewInvoice']")))
-            newinvoice_btn_element.click()
+            openinvoice_btn_element = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH,"//a[@data-aqa='openInvoices']")))
+            openinvoice_btn_element.click()
 
-            recent_btn = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='btnRecentDays']")))
-            recent_btn.click()
+            # recent_btn = WebDriverWait(driver, 120).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-aqa='btnRecentDays']")))
+            # recent_btn.click()
 
             time.sleep(2)
 
@@ -280,11 +281,11 @@ else:
             # if len(service_table_element) >= 1 :
             for tbl_row in range(1, len(service_table_element) +1):
 
-                service_tblrow_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,f"(//table[contains(@class, 'k-grid-table')]//tr[{tbl_row}]//a[@data-aqa="link"])[2]")))
+                service_tblrow_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,f"//table[@class='k-grid-table']//tr[{tbl_row}]//td[@data-aqa='number']")))
                 extracted_invoice_number = service_tblrow_element.text
 
-                if extracted_dos_date == service_dos_txt and service_type == title_value:
-                    dos_match = True
+                if invoice_number == extracted_invoice_number :#and service_type == title_value
+                    # dos_match = True
                     print(f"Invoice Number: ({invoice_number}) matched.")
                     service_tblrow_element.click()
                     invoice_footnote_element = WebDriverWait(driver, 120).until(
@@ -292,7 +293,10 @@ else:
                     invoice_footnote_element.click()
                     invoice_footnote_element.send_keys(f"Claim submitted through availity portal under transaction ID#{invoice_number}")
                     save_button_element = WebDriverWait(driver, 120).until(
-                        EC.element_to_be_clickable((By.XPATH,"(//button[@data-aqa='saveInvoic'"])[2]")))
+                        EC.element_to_be_clickable((By.XPATH,"(//button[@data-aqa='saveInvoic'])[2]")))
+                    bcbs_sheet.cell(row=row, column=data_columns['Transaction Status']).value = "Transaction Number updated"
+                    bcbs_billing_wb.save(bcbs_file_path)
+
                     time.sleep(2)
 
             if archived_tab or claimTab_status == "Archived":

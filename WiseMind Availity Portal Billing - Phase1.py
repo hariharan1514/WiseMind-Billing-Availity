@@ -464,7 +464,7 @@ else:
             submit_button.click()
 
             transaction_id_element = WebDriverWait(driver, 60).until(
-                EC.visibility_of_element_located((By.XPATH, "(//p[contains(@class, 'MuiTypography-root') and contains(text(), 'Transaction ID')]/following-sibling::p")))
+                EC.visibility_of_element_located((By.XPATH, "//p[contains(@class, 'MuiTypography-root') and contains(text(), 'Transaction ID')]/following-sibling::p")))
             transaction_id = transaction_id_element.text.strip()
             print(transaction_id)
 
