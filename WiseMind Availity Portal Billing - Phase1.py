@@ -104,7 +104,7 @@ else:
         ## Insurance Company/Benefit Plan Information ###
 
         billing_frame_element = WebDriverWait(driver, 60).until(
-            EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[@id='newBodyFrame']")))
+            EC.presence_of_element_located((By.XPATH, "//iframe[@id='newBodyFrame']")))
         driver.switch_to.frame(billing_frame_element)
 
         organization_element = WebDriverWait(driver, 60).until(
