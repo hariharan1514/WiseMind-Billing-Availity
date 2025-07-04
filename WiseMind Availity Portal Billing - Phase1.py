@@ -198,10 +198,10 @@ else:
             if gender == "Male" :
 
                 gender_element = WebDriverWait(driver, 60).until(
-                    EC.visibility_of_element_located((By.XPATH, "//input[@name='organization']")))
+                    EC.visibility_of_element_located((By.XPATH, "//input[@name='patient.genderCode']")))
                 organization_element.click()
                 organization_element.clear()
-                organization_element.send_keys("Wise Mind Psychological Services, P.L.L.C.")
+                organization_element.send_keys(gender)
                 time.sleep(2)
                 driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
                 time.sleep(1)
