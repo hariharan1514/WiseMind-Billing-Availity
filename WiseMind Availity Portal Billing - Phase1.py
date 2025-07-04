@@ -156,6 +156,9 @@ else:
 
             status = availity_billing_ws.cell(row=row, column=columns['Status']).value
 
+            if status == "Yes":
+                continue
+
             client_name = availity_billing_ws.cell(row=row, column=columns['Client Name']).value
             client_id_number = availity_billing_ws.cell(row=row, column=columns['Client ID Number']).value
             service_date = availity_billing_ws.cell(row=row, column=columns['Date/Time']).value
