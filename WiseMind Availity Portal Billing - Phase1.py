@@ -244,7 +244,7 @@ else:
             insuranceid_element.send_keys(insurance_number)
 
             authorized_plan_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@name='subscriber.memberId']")))
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.benefitsAssignmentCertification']")))
             authorized_plan_element.send_keys("Y -")
             time.sleep(2)
             driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
