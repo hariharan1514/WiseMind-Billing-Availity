@@ -202,7 +202,7 @@ else:
                 gender_element.send_keys(gender)
                 time.sleep(2)
                 driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
-                time.sleep(1)
+                driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
                 driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
                 time.sleep(1)
                 driver.switch_to.active_element.send_keys(Keys.ENTER)
