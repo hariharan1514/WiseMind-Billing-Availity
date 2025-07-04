@@ -330,7 +330,7 @@ else:
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             release_of_information_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.providerAcceptAssignmentCode']")))
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.informationReleaseCode']")))
             release_of_information_element.click()
             release_of_information_element.send_keys("Y -")
             time.sleep(2)
@@ -339,7 +339,7 @@ else:
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
             provider_signature_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.providerAcceptAssignmentCode']")))
+                EC.element_to_be_clickable((By.XPATH, "//input[@name='claimInformation.providerSignatureOnFile']")))
             provider_signature_element.click()
             provider_signature_element.send_keys("Yes")
             time.sleep(2)
