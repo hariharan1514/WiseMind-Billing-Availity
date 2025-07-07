@@ -458,8 +458,6 @@ else:
             quantity_element.click()
             quantity_element.send_keys(quantity)
 
-            manual_audit = input("Kindly Check the all fileds and Click enter here.!!!")
-
             ### Continue & Submitt & Transaction ID logic need to done. ###
 
             continue_button_element = WebDriverWait(driver, 60).until(
