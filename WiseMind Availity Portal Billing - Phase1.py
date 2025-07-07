@@ -277,9 +277,13 @@ else:
             time.sleep(1)
             driver.switch_to.active_element.send_keys(Keys.ENTER)
 
-            select_address_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r14:']")))
-            select_address_element.send_keys("77 North Centre Ave")
+            time.sleep(3)
+            driver.switch_to.active_element.send_keys(Keys.TAB)
+            time.sleep(1)
+
+            # select_address_element = WebDriverWait(driver, 60).until(
+            #     EC.element_to_be_clickable((By.XPATH, "//input[@id=':r14:']")))
+            driver.switch_to.active_element.send_keys("77 North Centre Ave")
             time.sleep(2)
             address = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), '77 North Centre Ave') or contains(text(), '77 N CENTRE AVE STE 310')]")))
             address.click()
