@@ -364,9 +364,8 @@ else:
             ### DIAGNOSIS CODES ###
 
             dx_code_list = dx_code.split(",")
-            print(f"lenDXCOde : {len(dx_code_list)}")
 
-            if len(dx_code_list) > 0 :
+            if len(dx_code_list) > 1 :
                 for code in range(0, len(dx_code_list), +1):
                     if code == 0:
                         dxcode_box_element = WebDriverWait(driver, 60).until(
@@ -471,12 +470,11 @@ else:
             transaction_id_element = WebDriverWait(driver, 60).until(
                 EC.visibility_of_element_located((By.XPATH, "//p[contains(@class, 'MuiTypography-root') and contains(text(), 'Transaction ID')]/following-sibling::p")))
             transaction_id = transaction_id_element.text.strip()
-            print(transaction_id)
 
             availity_billing_ws.cell(row=row, column=columns['Transaction Number']).value = transaction_id
             availity_billing_ws.cell(row=row, column=columns['Status']).value = "Yes"
             availity_billing_wb.save(bcbs_file_path)
-            print(f"The Claim : {client_name} has been billed." )
+            print(f"✅ The Claim : {client_name} has been billed." )
 
             new_claim = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='New Claim']")))
