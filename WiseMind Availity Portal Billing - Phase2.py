@@ -278,14 +278,14 @@ else:
             time.sleep(2)
 
             ### Services Table looping ###
-            dos_match = False
+            # dos_match = False
             # extracted_dos_date = dos_date.replace(" ET", "").strip()
             service_table_element = WebDriverWait(driver, 120).until(EC.presence_of_all_elements_located((By.XPATH,"(//table[contains(@class, 'k-grid-table')]//tr)")))
             driver.execute_script("document.body.style.zoom= '50%'")
             # if len(service_table_element) >= 1 :
             for tbl_row in range(1, len(service_table_element) +1):
 
-                service_tblrow_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,f"//table[@class='k-grid-table']//tr[{tbl_row}]//td[@data-aqa='number']")))
+                service_tblrow_element = WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.XPATH,f"//table[@class='k-grid-table']//tr[{tbl_row}]//td[@data-aqa='number']//span//a")))
                 extracted_invoice_number = service_tblrow_element.text
 
                 if invoice_number == extracted_invoice_number :#and service_type == title_value
@@ -293,7 +293,7 @@ else:
                     print(f"Invoice Number: ({invoice_number}) matched.")
                     service_tblrow_element.click()
                     invoice_footnote_element = WebDriverWait(driver, 120).until(
-                        EC.element_to_be_clickable((By.XPATH,"//textarea[@data-aqa='invoiceFootnot']")))
+                        EC.element_to_be_clickable((By.XPATH,"//div[@class='k8_io bco_aiz']//textarea")))
                     invoice_footnote_element.click()
                     invoice_footnote_element.send_keys(f"Claim submitted through availity portal under transaction ID#{invoice_number}")
                     save_button_element = WebDriverWait(driver, 120).until(
