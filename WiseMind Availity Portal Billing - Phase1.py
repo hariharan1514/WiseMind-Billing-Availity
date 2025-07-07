@@ -281,7 +281,7 @@ else:
                 EC.element_to_be_clickable((By.XPATH, "//input[@id=':r14:']")))
             select_address_element.send_keys("77 North Centre Ave")
             time.sleep(2)
-            address = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), '77 North Centre Ave')]")))
+            address = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, "//*[contains(text(), '77 North Centre Ave') or contains(text(), '77 N CENTRE AVE STE 310')]")))
             address.click()
             # driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
             # time.sleep(1)
@@ -360,7 +360,7 @@ else:
             ### DIAGNOSIS CODES ###
 
             dx_code_list = dx_code.split(",")
-            print(f"lenDXCOde : {dx_code_list}")
+            print(f"lenDXCOde : {len(dx_code_list)}")
 
             if len(dx_code_list) > 0 :
                 for code in range(0, len(dx_code_list), +1):
