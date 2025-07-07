@@ -181,7 +181,7 @@ else:
 
             ### PATIENT INFORMATION ###
 
-            lastname_element = WebDriverWait(driver, 60).until(
+            lastname_element = WebDriverWait(driver, 120).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@name='patient.lastName']")))
             lastname_element.send_keys(last_name)
             time.sleep(1)
@@ -270,7 +270,7 @@ else:
             billing_provider_extracted = billing_provider.split(",")[0].strip()
 
             select_billing_provider_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@id=':rb:']")))
+                EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-5749k3'])[3]//input")))
             select_billing_provider_element.send_keys(billing_provider_extracted)
             time.sleep(2)
             driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
@@ -289,7 +289,7 @@ else:
 
             try:
                 select_rendering_provider_element = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.XPATH, "//input[@id=':r15:']")))
+                    EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1fyjx9k'][1]//input)[1]")))
             except:
                 ### Add Rendering Provider ###
                 add_renderingprovider_element = WebDriverWait(driver, 60).until(
@@ -298,7 +298,7 @@ else:
 
             ### RENDERING PROVIDER ###
             select_rendering_provider_element = WebDriverWait(driver, 60).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@id=':r15:']")))
+                EC.element_to_be_clickable((By.XPATH, "(//div[@class='MuiBox-root css-1fyjx9k'][1]//input)[1]")))
             select_rendering_provider_element.send_keys(rendering_provider_extracted)
             time.sleep(2)
             driver.switch_to.active_element.send_keys(Keys.ARROW_DOWN)
