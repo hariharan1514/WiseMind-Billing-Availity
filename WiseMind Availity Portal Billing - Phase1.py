@@ -360,8 +360,9 @@ else:
             ### DIAGNOSIS CODES ###
 
             dx_code_list = dx_code.split(",")
+            print(f"lenDXCOde : {dx_code_list}")
 
-            if len(dx_code_list) > 1 :
+            if len(dx_code_list) > 0 :
                 for code in range(0, len(dx_code_list), +1):
                     if code == 0:
                         dxcode_box_element = WebDriverWait(driver, 60).until(
