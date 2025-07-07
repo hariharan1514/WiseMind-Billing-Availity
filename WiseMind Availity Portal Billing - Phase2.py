@@ -295,9 +295,9 @@ else:
                     invoice_footnote_element = WebDriverWait(driver, 120).until(
                         EC.element_to_be_clickable((By.XPATH,"//div[@class='k8_io bco_aiz']//textarea")))
                     invoice_footnote_element.click()
-                    invoice_footnote_element.send_keys(f"Claim submitted through availity portal under transaction ID#{invoice_number}")
+                    invoice_footnote_element.send_keys(f"Claim submitted through availity portal under the transaction ID#{transaction_number}")
                     save_button_element = WebDriverWait(driver, 120).until(
-                        EC.element_to_be_clickable((By.XPATH,"(//button[@data-aqa='saveInvoic'])[2]")))
+                        EC.element_to_be_clickable((By.XPATH,"(//button[@data-aqa='saveInvoice'])[1]")))
                     bcbs_sheet.cell(row=row, column=data_columns['Transaction Status']).value = "Transaction Number updated"
                     bcbs_billing_wb.save(bcbs_file_path)
 
