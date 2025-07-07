@@ -292,7 +292,7 @@ else:
                         EC.element_to_be_clickable((By.XPATH,"(//button[@data-aqa='saveInvoice'])[1]")))
                     save_button_element.click()
                     bcbs_sheet.cell(row=row, column=data_columns['Transaction Status']).value = "Transaction Number updated"
-                    print("Transaction Number Updated.!\n")
+                    print("✅ Transaction Number Updated.!\n")
                     bcbs_billing_wb.save(bcbs_file_path)
                     break
 
@@ -365,5 +365,5 @@ else:
         driver.get("https://wisemind71.theranest.com/home/logout")
         time.sleep(3)
 
-        print("✅✅ Billing Completed! ✅✅")
+        print("✅✅ Transaction ID Updation Completed! ✅✅")
         driver.quit()
